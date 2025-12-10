@@ -4,26 +4,30 @@ import java.util.concurrent.Semaphore;
 
 public class Comensal implements Runnable{
 
-	private Semaphore semaforo;
+	private String nombre;
+	private Semaphore hayPlato;
+	private Semaphore hayCliente;
 	
-	public Comensal(int num, String nombre) {
-		super();
-		this.semaforo = new Semaphore(num);
-	}
 	
-	public Comensal(int num) {
+
+	public Comensal(String nombre, Semaphore hayPlato, Semaphore hayCliente) {
 		super();
-		this.semaforo = new Semaphore(num);
+		this.nombre = nombre;
+		this.hayPlato = hayPlato;
+		this.hayCliente = hayCliente;
 	}
+
 
 	public void comer() {
 		try {
-			semaforo.acquire();
+			hayCliente.release();
+			hayPlato.acquire(3);
 			System.out.println(Thread.currentThread().getName() + " Esta comiendo");
 			Thread.sleep(2000);
 		} catch (InterruptedException e) {
 			e.printStackTrace();
-		}}
+		} 
+		}
 
 
 	@Override

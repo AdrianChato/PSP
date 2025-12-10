@@ -6,17 +6,27 @@ import java.util.concurrent.Semaphore;
 
 public class GestionaRestaurante {
 	public static void main(String[] args) {
-		List<Thread> hilos = new ArrayList<>();
-		//Semaphore semaforo = new Semaphore(3);
-		//Cocinero cocinero = new Cocinero(3);
+
+		Semaphore hayClientes = new Semaphore(1);
+		Semaphore hayPlato = new Semaphore(3);
+
+
+		try {
+			hayClientes.acquire();
+			hayPlato.acquire(3);
+		} catch (InterruptedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 		
-		//for(int i = 0; i < numHilos; i++)
-		{
-			//hilos.add(new Thread(new Comensal(semaforo, "hilo"+(i+1))));
-		}		
+		Cocinero cocinero = new Cocinero(hayClientes, hayPlato, "Pepe");
+		Thread hiloCocinero = new Thread(cocinero);
 		
-		for(Thread hilo : hilos)
-		{
-			hilo.start();
-		}		
-	}}
+		hiloCocinero.start();
+		
+		for (int i = 1; i <=7; i++) {
+			Comensal cliente = new Comensal("Juan", hayPlato, hayClientes);
+			Thread HiloComensal = new Thread(cliente);
+			HiloComensal.start();
+		}
+}}
