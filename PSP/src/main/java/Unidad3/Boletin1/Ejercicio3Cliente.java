@@ -1,15 +1,13 @@
-package Unidad3;
+package Unidad3.Boletin1;
 
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
-import java.net.InetAddress;
 import java.net.Socket;
 import java.net.UnknownHostException;
-import java.util.Scanner;
 
-public class ClienteSimple {
+public class Ejercicio3Cliente {
 
 	public static void main(String[] args) {
 		// TODO Auto-generated method stub
@@ -26,7 +24,6 @@ public class ClienteSimple {
 			
 			//Envia mensaje al servidor
 			String mensajeParaServidor = "hola";
-			boolean acaba = false;
 			while ((mensajeParaServidor = entrada.readLine()) != null && !mensajeParaServidor.equalsIgnoreCase("fin")) {
 				System.out.println("Cliente dice: " + mensajeParaServidor);
 				salida.println("Servidor responde: " + mensajeParaServidor.toUpperCase());
@@ -50,3 +47,4 @@ public class ClienteSimple {
 	}
 
 }
+
