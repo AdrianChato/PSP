@@ -1,0 +1,7 @@
+CREATE DATABASE IF NOT EXISTS SolisSpringBoot;
+
+CREATE USER IF NOT EXISTS 'usuario2'@'%' IDENTIFIED BY 'usuario';
+
+GRANT ALL PRIVILEGES ON SolisSpringBoot.* TO 'usuario2'@'%';
+
+FLUSH PRIVILEGES;
