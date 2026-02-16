@@ -30,31 +30,5 @@ public class Response {
 	public static Response errorResonse(int errorCode, String errorMessage) {
 		return new Response(new Error(errorCode, errorMessage));
 	}
-
-	public Error getError() {
-		return error;
-	}
-
-	public void setError(Error error) {
-		this.error = error;
-	}
-
-	public static int getNoError() {
-		return NO_ERROR;
-	}
-
-	public static int getNotFound() {
-		return NOT_FOUND;
-	}
-
-	public static String getNoMessage() {
-		return NO_MESSAGE;
-	}
-
-	public Response(Error error) {
-		super();
-		this.error = error;
-	}
-	
 	
 }
