@@ -1,10 +1,13 @@
 package acceso.myshop.models;
 
+import java.util.List;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.ManyToMany;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -29,5 +32,8 @@ public class Ruta {
 	@Column
 	private String descripcion;
 	@Column
-	private boolean es_oficial; 
+	private boolean esOficial; 
+	
+	@ManyToMany(mappedBy = "rutas")
+	private List<Moto> motos;
 }

@@ -8,54 +8,91 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
-import acceso.myshop.models.Product;
-import acceso.myshop.services.ProductService;
-import exceptions.ProductNotFoundException;
+
+import acceso.myshop.models.Moto;
+import acceso.myshop.models.Ruta;
+import acceso.myshop.models.Usuario;
+import acceso.myshop.services.MotoService;
+import acceso.myshop.services.RutaService;
+import acceso.myshop.services.UsuarioService;
+
 
 @Controller
 @RequestMapping("/SolisSpringBoot")
-
 public class MotoController {
-	@Autowired
-	private ProductService productService;
 
-	@RequestMapping("/") 
-	public String index(Model model) {
-		return "index";
-	}
+    @Autowired
+    private UsuarioService usuarioService;
 
-	@PostMapping("/producto")
-	public ResponseEntity<Product> addProduct(@RequestBody Product product) {
-		Product addedProduct = productService.createProduct(product);
-		return new ResponseEntity<>(addedProduct, HttpStatus.CREATED);
-	}
+    @Autowired
+    private MotoService motoService;
 
-	@PutMapping("/producto/{id}")
-	public ResponseEntity<Product> updateProduct(@PathVariable Long id, @RequestBody Product product) {
-		Product addedProduct = productService.updateNameProduct(id,product);
-		return new ResponseEntity<>(addedProduct, HttpStatus.CREATED);
-	}
-	
-	@RequestMapping("/lista")
-	public String catalog(Model model) {
-		List<Product> productos = productService.findAll();
-		System.out.println(productos);
-		model.addAttribute("productos", productos);
-		return "lista";
-	}
-	@ExceptionHandler(ProductNotFoundException.class)
-	@ResponseBody
-	@ResponseStatus(HttpStatus.NOT_FOUND)
-	public ResponseEntity<Response> handleException(ProductNotFoundException pnfe) 
-	{
-	        Response response = Response.errorResonse(Response.NOT_FOUND, pnfe.getMessage());
-	        return new ResponseEntity<>(response, HttpStatus.NOT_FOUND);
-	 }
-	
-    // Método para obtener un producto por ID
-    @GetMapping("/producto/{id}")
-    public ResponseEntity<Product> getProductById(@PathVariable Long id) {
-        Product product = productService.findProductById(id);
-        return ResponseEntity.ok(product);
+    @Autowired
+    private RutaService rutaService;
+
+    // Index de la página de inicio
+
+    @GetMapping("/")
+    public String index() {
+        return "index";
+    }
+
+    // Parte de usuarios
+
+    @GetMapping("/usuarios")
+    public String verUsuarios(Model model) {
+        model.addAttribute("usuarios", usuarioService.listarUsuarios());
+        return "usuarios";
+    }
+
+    @PostMapping("/usuario")
+    public ResponseEntity<Usuario> addUsuario(@RequestBody Usuario usuario) {
+        Usuario added = usuarioService.guardarUsuario(usuario);
+        return new ResponseEntity<>(added, HttpStatus.CREATED);
+    }
+
+    @PutMapping("/usuario/{id}/rol")
+    public ResponseEntity<Usuario> cambiarRol(@PathVariable Long id, @RequestBody String nuevoRol) {
+        Usuario actualizado = usuarioService.actualizarRol(id, nuevoRol);
+        return ResponseEntity.ok(actualizado);
+    }
+
+    // Parte de motos
+
+    @GetMapping("/motos")
+    public String verMotos(Model model) {
+        model.addAttribute("motos", motoService.listarMotos());
+        return "motos";
+    }
+
+    @PostMapping("/moto")
+    public ResponseEntity<Moto> addMoto(@RequestBody Moto moto) {
+        Moto added = motoService.guardarMoto(moto);
+        return new ResponseEntity<>(added, HttpStatus.CREATED);
+    }
+
+    @GetMapping("/motos/{id}")
+    public ResponseEntity<Moto> obtenerMoto(@PathVariable Long id) {
+        Moto moto = motoService.obtenerPorId(id).orElseThrow();
+        return ResponseEntity.ok(moto);
+    }
+
+    // Parte de rutas
+
+    @GetMapping("/rutas")
+    public String verRutas(Model model) {
+        model.addAttribute("rutas", rutaService.listarRutas());
+        return "rutas";
+    }
+
+    @PostMapping("/ruta")
+    public ResponseEntity<Ruta> addRuta(@RequestBody Ruta ruta) {
+        Ruta added = rutaService.guardarRuta(ruta);
+        return new ResponseEntity<>(added, HttpStatus.CREATED);
+    }
+
+    @GetMapping("/rutas/oficiales")
+    public ResponseEntity<List<Ruta>> rutasOficiales() {
+        return ResponseEntity.ok(rutaService.rutasOficiales());
     }
 }

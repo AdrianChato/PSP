@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head>
+	<meta charset="UTF-8">
+	<title>Rutas</title>
+</head>
+
+<body>
+
+	<h2>Listado</h2>
+
+	<table>
+		<tr>
+			<th>ID</th>
+			<th>Nombre</th>
+			<th>Km</th>
+		</tr>
+
+		<tr th:each="r : ${rutas}">
+			<td th:text="${r.idRuta}"></td>
+			<td th:text="${r.nombre}"></td>
+			<td th:text="${r.distancia_km}"></td>
+		</tr>
+
+	</table>
+
+</body>
+
+</html>
