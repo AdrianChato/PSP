@@ -35,21 +35,49 @@ public class ClinicaServiceImpl implements ClinicaService {
 		return animalRepo.save(animal);
 	}
 
-	@Override
+	/*@Override
 	public Animal addVacunaAAnimal(long id, Vacuna v) {
 		// TODO Auto-generated method stub
 		
-		Animal aninicial = this.findAnimalById(id);
-		if (aninicial != null) {
-			v.addAnimal(aninicial);
+		Animal aninicial =this.findAnimalById(id);
+		List<Vacuna> vacunas = aninicial.getVacunas();
+		if(vacunas.contains(v))
+			aninicial.setVacunas(vacunas);
+		else {
 			Vacuna vacunaId = createVacuna(v);
-			List<Vacuna> vacunas = aninicial.getVacunas();
 			vacunas.add(vacunaId);
 			aninicial.setVacunas(vacunas);
 		}
+		vacunaRepo.save(v);
 		return aninicial;
+	}*/
+	
+	@Override
+	public Animal addVacunaAAnimal(long id, Vacuna v) {
 
+	    Animal animal = this.findAnimalById(id);
+
+	    // Si la vacuna ya existe, la recuperamos
+	    Vacuna vacuna;
+	    if (v.getIdVacuna() != null) {
+	        vacuna = vacunaRepo.findById(v.getIdVacuna())
+	                           .orElseThrow(() -> new RuntimeException("Vacuna no encontrada"));
+	    } else {
+	        vacuna = vacunaRepo.save(v); // Creamos la vacuna nueva
+	    }
+
+	    // Evitar duplicados
+	    if (!animal.getVacunas().contains(vacuna)) {
+	        animal.getVacunas().add(vacuna);
+	        vacuna.getAnimales().add(animal);
+	    }
+
+	    // Guardar el lado propietario (Vacuna)
+	    vacunaRepo.save(vacuna);
+
+	    return animal;
 	}
+		
 
 	@Override
 	public Animal findAnimalById(long id) {

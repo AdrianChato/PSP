@@ -20,7 +20,6 @@ import lombok.NoArgsConstructor;
 
 @Data
 @AllArgsConstructor
-@NoArgsConstructor
 @Entity(name = "animales")
 public class Animal {
 
@@ -44,6 +43,19 @@ public class Animal {
         this.tipo = tipo;
         this.vacunas = new ArrayList<Vacuna>(); 
     }
+
+	public Animal() {
+		super();
+        this.vacunas = new ArrayList<Vacuna>(); 
+
+	}
+	
+	public void addVacuna(Vacuna v)
+	{
+		this.vacunas.add(v);
+	}
+    
+    
     
     
 }

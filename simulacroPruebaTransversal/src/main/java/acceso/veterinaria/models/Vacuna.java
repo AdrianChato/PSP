@@ -2,7 +2,9 @@ package acceso.veterinaria.models;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
-import java.util.List;   
+import java.util.List;
+
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -16,6 +18,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 @Data
+@AllArgsConstructor
 @Entity(name = "vacunas")
 public class Vacuna 
 {
@@ -28,6 +31,7 @@ public class Vacuna
 	
 	@ManyToMany()
 	@JoinTable(name = "animal_vacuna", joinColumns = @JoinColumn(name = "idVacuna"), inverseJoinColumns = @JoinColumn(name = "idAnimal"))
+	@JsonIgnore
 	private List<Animal> animales;
 
 	public Vacuna(String nombre, String partida, String farmaceutica) {
