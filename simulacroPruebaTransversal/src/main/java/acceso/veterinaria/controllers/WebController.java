@@ -1,5 +1,8 @@
 package acceso.veterinaria.controllers;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -45,6 +48,12 @@ public class WebController {
 		Animal animal = clinicaService.findAnimalById(id);
 		return ResponseEntity.ok(animal);
 	}
+	
+	@GetMapping("/vacuna/{id}")
+	public ResponseEntity<Vacuna> getVacunaById(@PathVariable Long id) {
+		Vacuna vacuna = clinicaService.findVacunaById(id);
+		return ResponseEntity.ok(vacuna);
+	}
 
 	@PostMapping("/animal")
 	@ResponseBody
@@ -61,10 +70,17 @@ public class WebController {
 		return new ResponseEntity<>(addedVacuna, HttpStatus.CREATED);
 	}
 
-	@PutMapping("/animal/{id}")
-	public ResponseEntity<Animal> updateProduct(@PathVariable Long id, @RequestBody Vacuna vacuna) {
-		Animal addedVacuna = clinicaService.addVacunaAAnimal(id, vacuna);
-		return new ResponseEntity<>(addedVacuna, HttpStatus.CREATED);
+	// agregar vacuna a un animal
+	@PostMapping("/agregarVacuna/{idAnimal}")
+	@ResponseBody
+	public Map<String, Object> addVacunaAnimal(@PathVariable Long idAnimal, @RequestBody Vacuna vacuna) {
+		Map<String, Object> respuesta = new HashMap<>();
+		Animal animal = clinicaService.addVacunaAAnimal(idAnimal, vacuna);
+		Vacuna vacunaAnimal = clinicaService.findVacunaById(vacuna.getIdVacuna());
+		respuesta.put("idAnimal", animal.getIdAnimal());
+		respuesta.put("idVacuna", vacunaAnimal.getIdVacuna());
+		return respuesta;
+
 	}
 
 }

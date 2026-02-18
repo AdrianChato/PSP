@@ -65,16 +65,13 @@ public class ClinicaServiceImpl implements ClinicaService {
 	    } else {
 	        vacuna = vacunaRepo.save(v); // Creamos la vacuna nueva
 	    }
-
 	    // Evitar duplicados
 	    if (!animal.getVacunas().contains(vacuna)) {
 	        animal.getVacunas().add(vacuna);
 	        vacuna.getAnimales().add(animal);
 	    }
-
 	    // Guardar el lado propietario (Vacuna)
 	    vacunaRepo.save(vacuna);
-
 	    return animal;
 	}
 		
@@ -87,6 +84,11 @@ public class ClinicaServiceImpl implements ClinicaService {
 	@Override
 	public Vacuna createVacuna(Vacuna vacuna) {
 		return vacunaRepo.save(vacuna);
+	}
+
+	@Override
+	public Vacuna findVacunaById(long id) {
+		return vacunaRepo.findVacunaByIdVacuna(id);
 	}
 
 }

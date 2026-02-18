@@ -11,6 +11,7 @@ public interface ClinicaService {
 	List<Vacuna> findAllVacuna();
 	List<Animal> findAllAnimal();
     Animal findAnimalById(long id);
+    Vacuna findVacunaById(long id);
     public Animal createAnimal (Animal animal);
     public Vacuna createVacuna (Vacuna vacuna);
     public Animal addVacunaAAnimal (long id, Vacuna v);
