@@ -50,7 +50,7 @@ public class WebSecurityConfig {
                )
                .authorizeHttpRequests(authorizeRequests ->
                        authorizeRequests
- .requestMatchers("/miweb/auth/**").permitAll().anyRequest().authenticated()                                      
+ .requestMatchers("/SolisSecurizacion/login/**").permitAll().anyRequest().authenticated()                                      
                );
    http.addFilterBefore(authenticationJwtTokenFilter(), UsernamePasswordAuthenticationFilter.class);
        return http.build();

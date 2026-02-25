@@ -18,7 +18,7 @@ import acceso.myshop.services.UsuarioService;
 import acceso.myshop.util.JWTUtility;
 
 @RestController
-@RequestMapping("/miweb/auth")
+@RequestMapping("/SolisSecurizacion/login")
 public class AuthController {
 	private static final Logger logger = LogManager.getLogger(AuthController.class);
 	@Autowired
@@ -38,7 +38,7 @@ public class AuthController {
 		return jwtUtils.generateToken(userDetails.getUsername());
 	}
 	
-	@PostMapping("/nuevousuario")
+	@PostMapping("/nuevoUsuario")
 	   public String registerUser(@RequestBody Usuario user) {
 			logger.debug("Entro en alta");
 	       if (usuarioService.existsByNombre(user.getNombre())) {
@@ -49,5 +49,4 @@ public class AuthController {
 	       usuarioService.saveUsuario(newUser);
 	       return "User registered successfully!";
 	   }
-		
 	}
