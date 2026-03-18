@@ -1,52 +1,53 @@
 package acceso.myshop.controllers;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+import acceso.myshop.models.Usuario;
+import acceso.myshop.services.UsuarioService;
+import acceso.myshop.util.JWTUtility;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
-import acceso.myshop.models.Usuario;
-import acceso.myshop.services.UsuarioService;
-import acceso.myshop.util.JWTUtility;
+import java.time.LocalDate;
 
 @RestController
-@RequestMapping("/SolisSecurizacion/login")
+@RequestMapping("/auth") // Ruta base simple
 public class AuthController {
-	private static final Logger logger = LogManager.getLogger(AuthController.class);
-	@Autowired
-	AuthenticationManager authenticationManager;
-	@Autowired
-	UsuarioService usuarioService;
-	@Autowired
-	PasswordEncoder encoder;
-	@Autowired
-	JWTUtility jwtUtils; 
+    @Autowired
+    AuthenticationManager authenticationManager;
+    @Autowired
+    UsuarioService usuarioService;
+    @Autowired
+    PasswordEncoder encoder;
+    @Autowired
+    JWTUtility jwtUtils; 
 
-	@PostMapping("/login")
-	public String login(@RequestBody Usuario usuario) {
-		     UsernamePasswordAuthenticationToken token = new UsernamePasswordAuthenticationToken(usuario.getNombre(), usuario.getPassword_hash());		
-		Authentication authentication = authenticationManager.authenticate(token);
-		UserDetails userDetails = (UserDetails) authentication.getPrincipal();
-		return jwtUtils.generateToken(userDetails.getUsername());
-	}
-	
-	@PostMapping("/nuevoUsuario")
-	   public String registerUser(@RequestBody Usuario user) {
-			logger.debug("Entro en alta");
-	       if (usuarioService.existsByNombre(user.getNombre())) {
-	           return "Error: Username is already taken!";
-	       }
-	       // Create new user's account
-	       Usuario newUser = new Usuario(null, user.getNombre(), encoder.encode(user.getPassword_hash()));
-	       usuarioService.saveUsuario(newUser);
-	       return "User registered successfully!";
-	   }
-	}
+    @PostMapping("/login")
+    public String login(@RequestBody Usuario usuario) {
+        Authentication authentication = authenticationManager.authenticate(
+                new UsernamePasswordAuthenticationToken(usuario.getNombre(), usuario.getPassword_hash()));
+        
+        SecurityContextHolder.getContext().setAuthentication(authentication);
+        UserDetails userDetails = (UserDetails) authentication.getPrincipal();
+        return jwtUtils.generateToken(userDetails.getUsername());
+    }
+    
+    @PostMapping("/registro") // Ruta para dar de alta
+    public String registerUser(@RequestBody Usuario user) {
+        if (usuarioService.existsByNombre(user.getNombre())) {
+            return "Error: El usuario ya existe";
+        }
+        
+        Usuario newUser = new Usuario();
+        newUser.setNombre(user.getNombre());
+        newUser.setPassword_hash(encoder.encode(user.getPassword_hash())); 
+        newUser.setRol("USER");
+        
+        usuarioService.guardarUsuario(newUser); // Usamos el método de tu Service
+        return "Usuario registrado con éxito";
+    }
+}

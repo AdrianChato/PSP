@@ -1,0 +1,7 @@
+CREATE DATABASE IF NOT EXISTS SolisSecurizacion;
+
+CREATE USER IF NOT EXISTS 'usuario2'@'%' IDENTIFIED BY 'usuario';
+
+GRANT ALL PRIVILEGES ON SolisSecurizacion.* TO 'usuario2'@'%';
+
+FLUSH PRIVILEGES;

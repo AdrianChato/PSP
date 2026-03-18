@@ -1,7 +1,5 @@
 package acceso.myshop.security;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -15,43 +13,39 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
-import acceso.myshop.services.CustomerDetailService;
-
 @Configuration
 @EnableWebSecurity
 public class WebSecurityConfig {
-	private static final Logger logger = LogManager.getLogger(WebSecurityConfig.class);
-  	@Autowired
-	CustomerDetailService detalleUsuarioServicio;
-   @Autowired
-   private AuthEntryPoint entryPoint;
-   @Bean
-   public AuthTokenFilter authenticationJwtTokenFilter() {
-       return new AuthTokenFilter();
-   }
-   @Bean
-   public AuthenticationManager authenticationManager(
-           AuthenticationConfiguration authenticationConfiguration
-   ) throws Exception {
-       return authenticationConfiguration.getAuthenticationManager();
-   }
-   @Bean
-   public PasswordEncoder passwordEncoder() {
-       return new BCryptPasswordEncoder();
-   } 
-   @Bean
-   public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
-       http    .csrf(csrf -> csrf.disable()) // Disable CSRF
-               .exceptionHandling(exceptionHandling ->
-                       exceptionHandling.authenticationEntryPoint(entryPoint)
-               )
-               .sessionManagement(sessionManagement ->
-                       sessionManagement.sessionCreationPolicy(SessionCreationPolicy.STATELESS)
-               )
-               .authorizeHttpRequests(authorizeRequests ->
-                       authorizeRequests
- .requestMatchers("/SolisSecurizacion/login/**").permitAll().anyRequest().authenticated()                                      
-               );
-   http.addFilterBefore(authenticationJwtTokenFilter(), UsernamePasswordAuthenticationFilter.class);
-       return http.build();
-   }}
+
+    @Autowired
+    private AuthEntryPoint entryPoint;
+
+    @Bean
+    public AuthTokenFilter authenticationJwtTokenFilter() {
+        return new AuthTokenFilter();
+    }
+
+    @Bean
+    public AuthenticationManager authenticationManager(AuthenticationConfiguration authConfig) throws Exception {
+        return authConfig.getAuthenticationManager();
+    }
+
+    @Bean
+    public PasswordEncoder passwordEncoder() {
+        return new BCryptPasswordEncoder();
+    }
+
+    @Bean
+    public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
+        http.csrf(csrf -> csrf.disable())
+            .exceptionHandling(exception -> exception.authenticationEntryPoint(entryPoint))
+            .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+            .authorizeHttpRequests(auth -> auth
+                .requestMatchers("/auth/**").permitAll() // DEBE coincidir con el Controller
+                .anyRequest().authenticated()
+            );
+
+        http.addFilterBefore(authenticationJwtTokenFilter(), UsernamePasswordAuthenticationFilter.class);
+        return http.build();
+    }
+}
